@@ -1,0 +1,32 @@
+package analizadores;
+import java_cup.runtime.*;
+
+parser code
+{:
+    public void syntax_error(Symbol s){
+        System.out.println("Erroe Sintactico en la linea "+s.left+" Columna "+s.right+". No se esperaba este componente: "+s.value+".");
+    }
+:}
+
+terminal String mas, menos, por, dividido;
+terminal String entero;
+terminal String decimal;
+
+non terminal INICIO;
+non terminal Double EXP;
+
+precedence left mas, menos;
+precedence left por, dividido;
+
+start with INICIO;
+
+INICIO::=EXP:var1 {:System.out.println(var1);:};
+
+EXP ::=
+ |  EXP:var1     mas       EXP:var2    {:RESULT=var1+var2;:}
+ |  EXP:var1     menos     EXP:var2    {:RESULT=var1-var2;:}
+ |  EXP:var1     por       EXP:var2    {:RESULT=var1*var2;:}
+ |  EXP:var1     dividido  EXP:var2    {:RESULT=var1/var2;:}
+ |  entero:var1                        {:RESULT=new Double(var1);:}
+ |  decimal:var1                       {:RESULT=new Double(var1);:}
+;
